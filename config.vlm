@@ -1,0 +1,20 @@
+%Author: Omar Kahol
+
+%geometry
+BLADES = 8
+RADIUS = 1.50
+CHORD = 0.1
+CUTOFF = 0.3
+PITCH = 10
+ASHAFT = -10
+
+%panels
+NPANELS = 20
+
+%mechanics
+OMEGA = 1200
+
+%simulation control
+ITPRINT = 1
+TFINAL = 0.1
+NT = 10
