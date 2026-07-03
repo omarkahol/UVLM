@@ -1,11 +1,13 @@
 #if !defined(BIOT_SAVART_H)
 #define BIOT_SAVART_H
-#include "mesh_movement.h"
 
-namespace VLM::aerodynamics{
-double induced_velocity(VLM::mesh::vortex_panel *panel_1, VLM::mesh::vortex_panel *panel_2) {
+#include "bladePanel.h"
+#include <Eigen/Dense>
+
+namespace VLM::aerodynamics {
+double induced_velocity(VLM::mesh::bladePanel *panel_1, VLM::mesh::bladePanel *panel_2) {
     
-    const arma::vec &cp = panel_2->get_control_point();
+    const Eigen::Vector3d &cp = panel_2->getControlPoint();
     double v{0.0};
     /*
         1--<--4
@@ -15,23 +17,24 @@ double induced_velocity(VLM::mesh::vortex_panel *panel_1, VLM::mesh::vortex_pane
         2-->--3
     */
 
-    const arma::mat &p = panel_1->get_mesh();
-    
     for (int i=0; i<4; i++) {
         int inext = (i+1)%4;
-        arma::vec l = p.col(inext)-p.col(i);
-        arma::vec r1 = cp-p.col(i);
-        arma::vec r2 = cp-p.col(inext);
-        double l_norm = arma::norm(l);
-        double r1_norm = arma::norm(r1);
-        double r2_norm = arma::norm(r2);
+        Eigen::Vector3d p_i = panel_1->getPoint(i+1);
+        Eigen::Vector3d p_inext = panel_1->getPoint(inext+1);
+        
+        Eigen::Vector3d l = p_inext - p_i;
+        Eigen::Vector3d r1 = cp - p_i;
+        Eigen::Vector3d r2 = cp - p_inext;
+        double l_norm = l.norm();
+        double r1_norm = r1.norm();
+        double r2_norm = r2.norm();
 
-        double cosb1 = M_PI-arma::dot(l,r1)/(l_norm*r1_norm);
-        double cosb2 = arma::dot(l,r2)/(l_norm*r2_norm);
+        double cosb1 = M_PI - l.dot(r1)/(l_norm*r1_norm);
+        double cosb2 = l.dot(r2)/(l_norm*r2_norm);
 
-        arma::vec ev = arma::cross(l,r1);
-        double ev_norm = arma::norm(ev);
-        double proj = arma::dot(ev,panel_2->get_normal())/ev_norm;
+        Eigen::Vector3d ev = l.cross(r1);
+        double ev_norm = ev.norm();
+        double proj = ev.dot(panel_2->getNormal())/ev_norm;
         v += (cosb1+cosb2)*proj/(4*M_PI*r1_norm*cosb1);
     }
 

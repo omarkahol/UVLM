@@ -16,7 +16,7 @@ namespace VLM::IO {
         double alfa_shaft;
         int npoints;
     };
-    helicopter helicopter_configuration(parser &p){
+    inline helicopter helicopter_configuration(parser &p){
         auto data = p.get();
         helicopter h;
         h.n_blades = data["BLADES"].first;
@@ -33,11 +33,17 @@ namespace VLM::IO {
 //FLIGHT MECHANICS PART
     struct mechanics {
         double omega;
+        double v_inf_x;
+        double v_inf_y;
+        double v_inf_z;
     };
-    mechanics mechanics_configuration(parser &p) {
+    inline mechanics mechanics_configuration(parser &p) {
         mechanics m;
         auto data = p.get();
         m.omega = data["OMEGA"].first * M_PI/30;
+        m.v_inf_x = data["V_INF_X"].first;
+        m.v_inf_y = data["V_INF_Y"].first;
+        m.v_inf_z = data["V_INF_Z"].first;
         return m;
     }
 
@@ -47,14 +53,18 @@ namespace VLM::IO {
         int nt;
         int itprint;
         double dt;
+        int n_collapse;
+        double n_destroy;
     };
-    simulation simulation_configuration(parser &p) {
+    inline simulation simulation_configuration(parser &p) {
         simulation s;
         auto data = p.get();
         s.t_max = data["TFINAL"].first;
         s.itprint = data["ITPRINT"].first;
         s.nt = data["NT"].first;
         s.dt = data["TFINAL"].first/static_cast<double>(data["NT"].first);
+        s.n_collapse = data["NCOLLAPSE"].first;
+        s.n_destroy = data["NDESTROY"].first;
         return s;
     }
 }

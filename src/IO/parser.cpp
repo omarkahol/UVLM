@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/algorithm/string.hpp>
+#include <algorithm>
+#include <cctype>
 
 #include "parser.h"
 
@@ -21,6 +21,11 @@ VLM::IO::parser::parser(const char *filename) {
         data["TFINAL"] = std::make_pair<double,bool>(0,false);
         data["NT"] = std::make_pair<double,bool>(0,false);
         data["ITPRINT"] = std::make_pair<double,bool>(0,false);
+        data["NCOLLAPSE"] = std::make_pair<double,bool>(0,false);
+        data["NDESTROY"] = std::make_pair<double,bool>(0,false);
+        data["V_INF_X"] = std::make_pair<double,bool>(0,false);
+        data["V_INF_Y"] = std::make_pair<double,bool>(0,false);
+        data["V_INF_Z"] = std::make_pair<double,bool>(0,false);
     }
 }
 
@@ -32,14 +37,18 @@ void VLM::IO::parser::parse() {
     while(file) {
         std::string line;
         std::getline(file,line);
-        boost::algorithm::ireplace_all(line," ","");
+        // Remove spaces
+        line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
 
         if (line.length() < 1 || line[0]=='%') {
             continue;
         } else {
-            std::vector<std::string> split_lines;
-            boost::algorithm::split(split_lines,line,boost::is_any_of("="));
-            data[split_lines[0]] = std::make_pair<double, bool>(std::atof(split_lines[1].c_str()),true);
+            size_t pos = line.find('=');
+            if (pos != std::string::npos) {
+                std::string key = line.substr(0, pos);
+                std::string val = line.substr(pos + 1);
+                data[key] = std::make_pair<double, bool>(std::stod(val), true);
+            }
         }
     }
 }

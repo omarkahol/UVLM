@@ -2,28 +2,30 @@
 #define BLADE_PANEL_H
 
 #include <vector>
-#include <armadillo>
+#include <Eigen/Dense>
 
 namespace VLM::mesh {
 class bladePanel {
-    private: 
-        arma::mat *mesh;
+    public: 
+        Eigen::MatrixXd *mesh;
         int globalDoF[4];
         double gamma;
-        arma::vec cp;
-        arma::vec n;
+        Eigen::Vector3d cp;
+        Eigen::Vector3d n;
+        Eigen::Vector3d force;
     
     public:
-        bladePanel(arma::mat *mesh, int globalDoF[4]);
+        bladePanel() : mesh(nullptr), gamma(0.0) {}
+        bladePanel(Eigen::MatrixXd *mesh, int globalDoF[4]);
         ~bladePanel();
     
     public:
-        arma::subview_col<double> getPoint(const int &p);
+        Eigen::Vector3d getPoint(const int &p);
         void computeNormal();
         void computeControlPoint();
-        arma::vec getControlPoint();
-        arma::vec getNormal();
+        Eigen::Vector3d getControlPoint();
+        Eigen::Vector3d getNormal();
 };
 }
 
-#endif // VORTEX_PANEL_H
+#endif // BLADE_PANEL_H

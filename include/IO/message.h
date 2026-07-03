@@ -1,5 +1,5 @@
 #if !defined(MESSAGE_H)
-#define MESSAGE
+#define MESSAGE_H
 
 #include <string>
 #include <fstream>
