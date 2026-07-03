@@ -1,7 +1,7 @@
 %Author: Omar Kahol
 
 %geometry
-BLADES = 2
+BLADES = 4
 RADIUS = 1.50
 CHORD = 0.1
 CUTOFF = 0.3
@@ -19,7 +19,7 @@ V_INF_Z = -5.0
 
 %simulation control
 ITPRINT = 1
-TFINAL = 0.1
-NT = 50
+TFINAL = 1.0
+NT = 100
 NCOLLAPSE = 10
 NDESTROY = 10
